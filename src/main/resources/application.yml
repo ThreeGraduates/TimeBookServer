@@ -1,0 +1,40 @@
+#yml文件有严格的缩进，并且key与value值之间使用：分割，冒号后的空格不能少
+server:
+  port: 8001
+spring:
+  jpa:
+    database: MYSQL
+    show-sql: true
+    hibernate:
+      ddl-auto: update
+    properties:
+      hibernate:
+        dialect: org.hibernate.dialect.MySQL5Dialect
+  datasource:
+    driver-class-name: com.mysql.jdbc.Driver
+    url: jdbc:mysql://127.0.0.1:3306/timebook
+    username: root
+    password: liu_216216
+    tomcat:
+      initial-size: 5     #连接池启动时创建的初始连接数量
+      max-wait: 10000     #最大等待时间（毫秒），如果在没有连接可用的情况下等待超过此时间，则抛出异常
+
+logging:
+  level:
+    root: INFO
+    org.hibernate: INFO
+    org.hibernate.type.descriptor.sql.BasicBinder: TRACE
+    org.hibernate.type.descriptor.sql.BasicExtractor: TRACE
+
+management:
+  security:
+    enabled: false
+
+info:
+  app:
+    name: @project.artifactId@
+    encoding: @project.build.sourceEncoding@
+    java:
+      source: @java.version@
+      target: @java.version@
+
