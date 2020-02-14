@@ -46,29 +46,29 @@ public class UserController {
         if(!StringUtils.isBlank(email)){
             boolean matches = email.matches("[A-Za-z\\d]+([-_.][A-Za-z\\d]+)*@([A-Za-z\\d]+[-.])+[A-Za-z\\d]{2,4}");
             if(!matches){
-                response.getWriter().append("邮箱格式错误");
+                response.getWriter().append("email-format-error");
                 return;
             }
         }else{
-            response.getWriter().append("邮箱不得为空");
+            response.getWriter().append("email-is-null");
             return;
         }
         if(!StringUtils.isBlank(password)){
             boolean matches = email.matches("^.{6,18}$");
             if(!matches){
-                response.getWriter().append("密码必须为6-18位");
+                response.getWriter().append("password-format-error");
                 return;
             }
         }else{
-            response.getWriter().append("密码不得为空");
+            response.getWriter().append("password-is-null");
             return;
         }
         User user=this.userDao.save(new User(email,password));
         if(user!=null){
-            response.getWriter().append("保存成功");
+            response.getWriter().append("success");
             return;
         }else{
-            response.getWriter().append("保存失败");
+            response.getWriter().append("error");
             return;
         }
     }
@@ -88,14 +88,14 @@ public class UserController {
         User user=this.userDao.findByEmail(email);
         if(user!=null){
             if(!user.getPassword().equals(password)){
-                response.getWriter().append("密码错误");
+                response.getWriter().append("password-error");
                 return;
             }
         }else{
-            response.getWriter().append("该账号不存在");
+            response.getWriter().append("email-is-null");
             return;
         }
-        response.getWriter().append("用户登录成功");
+        response.getWriter().append("success");
         return;
     }
 }
