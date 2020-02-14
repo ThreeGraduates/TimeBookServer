@@ -75,6 +75,17 @@
       <version>2.4</version>
       <classifier>jdk15</classifier>
     </dependency>
+    <!--发送邮件-->
+    <dependency>
+      <groupId>javax.mail</groupId>
+      <artifactId>mail</artifactId>
+      <version>1.4</version>
+    </dependency>
+    <dependency>
+      <groupId>javax.activation</groupId>
+      <artifactId>activation</artifactId>
+      <version>1.1.1</version>
+    </dependency>
   </dependencies>
 
   <!--引入spring cloud的依赖-->

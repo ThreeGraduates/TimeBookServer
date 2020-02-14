@@ -2,27 +2,24 @@ package com.controller;
 
 import com.dao.UserDao;
 import com.entity.User;
-import com.fasterxml.jackson.databind.util.JSONPObject;
 import net.sf.json.JSONObject;
 import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.ResponseBody;
 
+import javax.mail.*;
+import javax.mail.internet.InternetAddress;
+import javax.mail.internet.MimeMessage;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
-import java.util.List;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
+import java.util.Properties;
 
 @Controller
 @RequestMapping("/user")
@@ -86,16 +83,49 @@ public class UserController {
         String password=jsonObject.getString("password");
         LOGGER.info("login-email:{},password:{}",email,password);
         User user=this.userDao.findByEmail(email);
-        if(user!=null){
-            if(!user.getPassword().equals(password)){
-                response.getWriter().append("password-error");
-                return;
-            }
+        if(user!=null&&user.getPassword().equals(password)){
+            response.getWriter().append(user.getId()+"");
         }else{
-            response.getWriter().append("email-is-null");
-            return;
+            response.getWriter().append("error");
         }
-        response.getWriter().append("success");
-        return;
+    }
+
+    /**
+     * 重置密码发送邮件
+     */
+    @RequestMapping("sendEmail")
+    public void sendEmail(String email) throws MessagingException {
+        Properties props=new Properties();
+        // 开启debug调试
+        props.setProperty("mail.debug", "true");
+        // 发送服务器需要身份验证
+        props.setProperty("mail.smtp.auth", "true");
+        // 设置邮件服务器主机名 使用163邮箱发送
+        props.setProperty("mail.host", "smtp.163.com");
+        // 发送邮件协议名称
+        props.setProperty("mail.transport.protocol", "smtp");
+        // 设置环境信息
+        Session session = Session.getInstance(props);
+        // 创建邮件对象
+        Message msg = new MimeMessage(session);
+        //设置邮件主题
+        msg.setSubject("重置密码");
+        // 设置邮件内容
+        String msgContent =  "点击以下链接重置您的密码:<br/><br/>"
+                + "<a href="+props.getProperty("url")+"/user/resetPwd>http://"+props.getProperty("url")+"/user/resetPwd</a><br/><br/>"
+                + "感谢使用本系统。" + "<br/><br/>"
+                + "此为自动发送邮件，请勿直接回复！";
+        //设置邮件内容为html格式
+        msg.setContent(msgContent, "text/html;charset=utf-8");
+        // 设置发件人
+        msg.setFrom(new InternetAddress("timebookemail@163.com"));
+
+        Transport transport = session.getTransport();
+        // 连接邮件服务器
+        transport.connect("timebookemail@163.com", "timebook2020");
+        // 发送邮件
+        transport.sendMessage(msg, new Address[] {new InternetAddress(email)});
+        // 关闭连接
+        transport.close();
     }
 }
