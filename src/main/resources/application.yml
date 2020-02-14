@@ -1,6 +1,9 @@
-#yml文件有严格的缩进，并且key与value值之间使用：分割，冒号后的空格不能少
 server:
-  port: 8001
+  port: 8080
+  #开启对jsp的热部署
+  jsp-servlet:
+    init-parameters:
+      development: true
 spring:
   jpa:
     database: MYSQL
@@ -16,8 +19,12 @@ spring:
     username: root
     password: liu_216216
     tomcat:
-      initial-size: 5     #连接池启动时创建的初始连接数量
-      max-wait: 10000     #最大等待时间（毫秒），如果在没有连接可用的情况下等待超过此时间，则抛出异常
+      initial-size: 5
+      max-wait: 10000
+  mvc:
+    view:
+      prefix: /WEB-INF/views/
+      suffix: .jsp
 
 logging:
   level:
@@ -26,15 +33,6 @@ logging:
     org.hibernate.type.descriptor.sql.BasicBinder: TRACE
     org.hibernate.type.descriptor.sql.BasicExtractor: TRACE
 
-management:
-  security:
-    enabled: false
 
-info:
-  app:
-    name: @project.artifactId@
-    encoding: @project.build.sourceEncoding@
-    java:
-      source: @java.version@
-      target: @java.version@
+
 
