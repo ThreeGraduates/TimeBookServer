@@ -8,7 +8,10 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.ResponseBody;
 
 import javax.mail.*;
 import javax.mail.internet.InternetAddress;
@@ -19,6 +22,9 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.net.URL;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.Properties;
 
 @Controller
@@ -90,42 +96,51 @@ public class UserController {
         }
     }
 
-//    /**
-//     * 重置密码发送邮件
-//     */
-//    @RequestMapping("sendEmail")
-//    public void sendEmail(String email) throws MessagingException {
-//        Properties props=new Properties();
-//        // 开启debug调试
-//        props.setProperty("mail.debug", "true");
-//        // 发送服务器需要身份验证
-//        props.setProperty("mail.smtp.auth", "true");
-//        // 设置邮件服务器主机名 使用163邮箱发送
-//        props.setProperty("mail.host", "smtp.163.com");
-//        // 发送邮件协议名称
-//        props.setProperty("mail.transport.protocol", "smtp");
-//        // 设置环境信息
-//        Session session = Session.getInstance(props);
-//        // 创建邮件对象
-//        Message msg = new MimeMessage(session);
-//        //设置邮件主题
-//        msg.setSubject("重置密码");
-//        // 设置邮件内容
-//        String msgContent =  "点击以下链接重置您的密码:<br/><br/>"
-//                + "<a href="+props.getProperty("url")+"/user/resetPwd>http://"+props.getProperty("url")+"/user/resetPwd</a><br/><br/>"
-//                + "感谢使用本系统。" + "<br/><br/>"
-//                + "此为自动发送邮件，请勿直接回复！";
-//        //设置邮件内容为html格式
-//        msg.setContent(msgContent, "text/html;charset=utf-8");
-//        // 设置发件人
-//        msg.setFrom(new InternetAddress("timebookemail@163.com"));
-//
-//        Transport transport = session.getTransport();
-//        // 连接邮件服务器
-//        transport.connect("timebookemail@163.com", "timebook2020");
-//        // 发送邮件
-//        transport.sendMessage(msg, new Address[] {new InternetAddress(email)});
-//        // 关闭连接
-//        transport.close();
-//    }
+    /**
+     * 重置密码发送邮件
+     */
+    @RequestMapping("sendEmail")
+    @ResponseBody
+    public void sendEmail(String email,HttpServletRequest request) throws MessagingException {
+        Properties props=new Properties();
+        props.setProperty("mail.debug", "true");
+        props.setProperty("mail.smtp.auth", "true");
+        props.setProperty("mail.host", "smtp.163.com");
+        props.setProperty("mail.transport.protocol", "smtp");
+        Session session = Session.getInstance(props);
+        Message msg = new MimeMessage(session);
+        msg.setSubject("重置密码");
+        String path=request.getScheme()+"://"+ request.getServerName()+":"+request.getLocalPort();
+        String msgContent ="请打开以下链接重置密码：<br/><br/>"
+                + "<a href='"+path+"/user/resetPwd?email="+email+"'>"+path+"/user/resetPwd?email="+email+"</a><br/><br/>"
+                + "感谢使用本系统。" + "<br/><br/>"
+                + "此为自动发送邮件，请勿直接回复！";
+        msg.setContent(msgContent, "text/html;charset=utf-8");
+        msg.setFrom(new InternetAddress("timebookemail@163.com"));
+        Transport transport = session.getTransport();
+        transport.connect("timebookemail@163.com", "timebook2020");
+        transport.sendMessage(msg, new Address[] {new InternetAddress(email)});
+        transport.close();
+    }
+
+    @RequestMapping("/resetPwd")
+    public String resetPwd(String email, Model model){
+        model.addAttribute("email",email);
+        return "resetPwd";
+    }
+
+    @PostMapping("/resetPassword")
+    @ResponseBody
+    public String resetPwd(String email,String password){
+        if(!StringUtils.isBlank(email)&&!StringUtils.isBlank(password)){
+            User user=this.userDao.findByEmail(email);
+            user.setPassword(password);
+            User user1=this.userDao.save(user);
+            if(user1!=null){
+                return "密码重置成功";
+            }
+        }
+        return "密码重置失败";
+    }
+
 }
