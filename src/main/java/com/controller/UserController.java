@@ -2,6 +2,7 @@ package com.controller;
 
 import com.dao.UserDao;
 import com.entity.User;
+import com.util.JSONUtils;
 import net.sf.json.JSONObject;
 import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
@@ -18,13 +19,7 @@ import javax.mail.internet.InternetAddress;
 import javax.mail.internet.MimeMessage;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import java.io.BufferedReader;
 import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.net.URL;
-import java.text.SimpleDateFormat;
-import java.util.Date;
 import java.util.Properties;
 
 @Controller
@@ -39,14 +34,16 @@ public class UserController {
      */
     @RequestMapping("/saveUser")
     public void saveUser(HttpServletRequest request, HttpServletResponse response) throws IOException {
-        InputStream is=request.getInputStream();
-        BufferedReader br=new BufferedReader(new InputStreamReader(is));
-        String result=br.readLine();
-        JSONObject jsonObject=JSONObject.fromObject(result);
+        JSONObject jsonObject=JSONUtils.getJsonObjFromRequest(request);
         String email=jsonObject.getString("email");
         String password=jsonObject.getString("password");
         LOGGER.info("saveUser-email:{},password:{}",email,password);
         if(!StringUtils.isBlank(email)){
+            User user=this.userDao.findByEmail(email);
+            if(user!=null){
+                response.getWriter().append("exist");
+                return;
+            }
             boolean matches = email.matches("[A-Za-z\\d]+([-_.][A-Za-z\\d]+)*@([A-Za-z\\d]+[-.])+[A-Za-z\\d]{2,4}");
             if(!matches){
                 response.getWriter().append("email-format-error");
@@ -68,7 +65,7 @@ public class UserController {
         }
         User user=this.userDao.save(new User(email,password));
         if(user!=null){
-            response.getWriter().append("success");
+            response.getWriter().append(user.getId()+"");
             return;
         }else{
             response.getWriter().append("error");
@@ -81,10 +78,7 @@ public class UserController {
      */
     @RequestMapping("/login")
     public void login(HttpServletRequest request, HttpServletResponse response) throws IOException {
-        InputStream is=request.getInputStream();
-        BufferedReader br=new BufferedReader(new InputStreamReader(is));
-        String result=br.readLine();
-        JSONObject jsonObject=JSONObject.fromObject(result);
+        JSONObject jsonObject=JSONUtils.getJsonObjFromRequest(request);
         String email=jsonObject.getString("email");
         String password=jsonObject.getString("password");
         LOGGER.info("login-email:{},password:{}",email,password);
@@ -97,7 +91,7 @@ public class UserController {
     }
 
     /**
-     * 重置密码发送邮件
+     * 重置密码发送邮件接口
      */
     @RequestMapping("sendEmail")
     @ResponseBody
