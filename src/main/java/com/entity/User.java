@@ -29,8 +29,8 @@ public class User {
     private Date createTime;
     private String signature;
 
-    public User(String username, String password) {
-        this.username = username;
+    public User(String email, String password) {
+        this.email=email;
         this.password = password;
     }
 }
