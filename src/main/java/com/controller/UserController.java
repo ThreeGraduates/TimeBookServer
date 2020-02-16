@@ -63,8 +63,12 @@ public class UserController {
             response.getWriter().append("password-is-null");
             return;
         }
-        User user=this.userDao.save(new User(email,password));
-        if(user!=null){
+        User user=new User(email,password);
+        user.setUsername(email);
+        user.setSignature("珍惜时间，珍惜当下");
+        user.setImage("/static/images/headImg.png");
+        User user1=this.userDao.save(user);
+        if(user1!=null){
             response.getWriter().append(user.getId()+"");
             return;
         }else{
