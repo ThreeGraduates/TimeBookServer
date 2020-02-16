@@ -95,7 +95,13 @@ public class UserController {
      */
     @RequestMapping("sendEmail")
     @ResponseBody
-    public void sendEmail(String email,HttpServletRequest request) throws MessagingException {
+    public void sendEmail(String email,HttpServletRequest request,HttpServletResponse response) throws IOException {
+        //判断邮箱是否存在
+        User user=this.userDao.findByEmail(email);
+        if(user==null){
+            response.getWriter().append("noExist");
+            return;
+        }
         Properties props=new Properties();
         props.setProperty("mail.debug", "true");
         props.setProperty("mail.smtp.auth", "true");
@@ -103,18 +109,24 @@ public class UserController {
         props.setProperty("mail.transport.protocol", "smtp");
         Session session = Session.getInstance(props);
         Message msg = new MimeMessage(session);
-        msg.setSubject("重置密码");
-        String path=request.getScheme()+"://"+ request.getServerName()+":"+request.getLocalPort();
-        String msgContent ="请打开以下链接重置密码：<br/><br/>"
-                + "<a href='"+path+"/user/resetPwd?email="+email+"'>"+path+"/user/resetPwd?email="+email+"</a><br/><br/>"
-                + "感谢使用本系统。" + "<br/><br/>"
-                + "此为自动发送邮件，请勿直接回复！";
-        msg.setContent(msgContent, "text/html;charset=utf-8");
-        msg.setFrom(new InternetAddress("timebookemail@163.com"));
-        Transport transport = session.getTransport();
-        transport.connect("timebookemail@163.com", "timebook2020");
-        transport.sendMessage(msg, new Address[] {new InternetAddress(email)});
-        transport.close();
+        try {
+            msg.setSubject("重置密码");
+            String path=request.getScheme()+"://"+ request.getServerName()+":"+request.getLocalPort();
+            String msgContent ="请打开以下链接重置密码：<br/><br/>"
+                    + "<a href='"+path+"/user/resetPwd?email="+email+"'>"+path+"/user/resetPwd?email="+email+"</a><br/><br/>"
+                    + "感谢使用本系统。" + "<br/><br/>"
+                    + "此为自动发送邮件，请勿直接回复！";
+            msg.setContent(msgContent, "text/html;charset=utf-8");
+            msg.setFrom(new InternetAddress("timebookemail@163.com"));
+            Transport transport = session.getTransport();
+            transport.connect("timebookemail@163.com", "timebook2020");
+            transport.sendMessage(msg, new Address[] {new InternetAddress(email)});
+            transport.close();
+            response.getWriter().append("success");
+        } catch (MessagingException e) {
+            response.getWriter().append("fail");
+            e.printStackTrace();
+        }
     }
 
     @RequestMapping("/resetPwd")
