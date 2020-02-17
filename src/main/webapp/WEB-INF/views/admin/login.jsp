@@ -5,7 +5,7 @@
 <html>
 <head>
     <title>管理员登录</title>
-    <link type="image/x-icon" href="${ctx}/static/image/favicon.ico" rel="shortcut icon">
+    <link type="image/x-icon" href="${ctx}/static/images/favicon.ico" rel="shortcut icon">
     <link href="${ctx}/static/css/bootstrap.min.css" rel="stylesheet" type="text/css"/>
     <link href="${ctx}/static/css/login.css" rel="stylesheet" type="text/css"/>
     <script src="${ctx}/static/js/jquery.min.js" type="text/javascript"></script>
@@ -37,16 +37,16 @@
 <%--    <img src="${ctx}/static/images/login/title.PNG" style="height: 80px;margin-top: 10px;"/>--%>
 <%--</div>--%>
 <div class="container">
-    <img src="${ctx}/static/image/bg.jpg" style="float: left;width: 620px;margin-top: 20px;margin-top:120px;"/>
+    <img src="${ctx}/static/images/bg.jpg" style="float: left;width: 620px;margin-top: 20px;margin-top:120px;"/>
     <div class="loginDiv" style="float: left;margin-top:100px;">
         <p style="width: 100%;text-align: center;font-size: 25px;margin-top:15px;color:rgb(221,94,73)">管理员登录</p>
         <form id="loginForm" action="return false;" style="margin-top: 18px;">
             <span id="info"></span>
             <div class="form-group" style="text-align: center">
-                <input class="inputInfo" id="username" type="text" name="username" style="background-image:url(/static/image/user.png);background-repeat: no-repeat;" autocomplete="off" placeholder="请输入用户名" required>
+                <input class="inputInfo" id="username" type="text" name="username" style="background-image:url(/static/images/user.png);background-repeat: no-repeat;" autocomplete="off" placeholder="请输入用户名" required>
             </div>
             <div class="form-group" style="text-align: center">
-                <input class="inputInfo" id="password" type="password" name="pwd" style="background-image:url(/static/image/pwd.png);background-repeat: no-repeat;" placeholder="请输入密码" required>
+                <input class="inputInfo" id="password" type="password" name="pwd" style="background-image:url(/static/images/pwd.png);background-repeat: no-repeat;" placeholder="请输入密码" required>
             </div>
             <div class="form-group form-check" style="margin-left: 60px;line-height:20px;">
                 <input type="checkbox" class="form-check-input" id="rememberPwd">

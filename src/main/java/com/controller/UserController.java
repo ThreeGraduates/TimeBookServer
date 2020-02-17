@@ -2,16 +2,20 @@ package com.controller;
 
 import com.dao.UserDao;
 import com.entity.User;
+import com.service.UserService;
 import com.util.JSONUtils;
 import net.sf.json.JSONObject;
 import org.apache.commons.lang.StringUtils;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import javax.mail.*;
@@ -19,8 +23,16 @@ import javax.mail.internet.InternetAddress;
 import javax.mail.internet.MimeMessage;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import java.io.File;
 import java.io.IOException;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 import java.util.Properties;
+
+import org.apache.commons.fileupload.FileItem;
+import org.apache.commons.fileupload.disk.DiskFileItemFactory;
+import org.apache.commons.fileupload.servlet.ServletFileUpload;
 
 @Controller
 @RequestMapping("/user")
@@ -28,11 +40,14 @@ public class UserController {
     private final Logger LOGGER=LoggerFactory.getLogger(UserController.class);
     @Autowired
     private UserDao userDao;
+    @Autowired
+    private UserService userService;
 
     /**
      * 用户注册接口
      */
     @RequestMapping("/saveUser")
+    @ResponseBody
     public void saveUser(HttpServletRequest request, HttpServletResponse response) throws IOException {
         JSONObject jsonObject=JSONUtils.getJsonObjFromRequest(request);
         String email=jsonObject.getString("email");
@@ -81,6 +96,7 @@ public class UserController {
      * 用户登录接口
      */
     @RequestMapping("/login")
+    @ResponseBody
     public void login(HttpServletRequest request, HttpServletResponse response) throws IOException {
         JSONObject jsonObject=JSONUtils.getJsonObjFromRequest(request);
         String email=jsonObject.getString("email");
@@ -153,4 +169,109 @@ public class UserController {
         return "密码重置失败";
     }
 
+    /**
+     *  上传用户头像接口
+     */
+    @RequestMapping("/uploadUserImage")
+    @ResponseBody
+    public void uploadUserImage(HttpServletRequest request, HttpServletResponse response) throws IOException {
+        Long userId = 0l;
+        DiskFileItemFactory factory = new DiskFileItemFactory();
+        ServletFileUpload upload = new ServletFileUpload(factory);
+        try{
+            List<FileItem> list = upload.parseRequest(request);
+            for(FileItem item:list) {
+                User user=null;
+                if(item.isFormField()) {
+                    userId = Long.parseLong(item.getString());
+                    user=this.userDao.findById(userId);
+                }else{
+                    String pathName = item.getName();
+                    String fileName = pathName.substring(pathName.lastIndexOf("\\")+1);
+                    String serverPath = request.getServletContext().getRealPath("/");
+                    item.write(new File(serverPath+"\\upload\\"+user.getId()+"\\"+fileName));
+                    user.setImage("/upload/"+user.getId()+"/"+fileName);
+                    User user1=this.userDao.save(user);
+                    if(user1!=null){
+                        response.getWriter().append("success");
+                    }else{
+                        response.getWriter().append("error");
+                    }
+                }
+            }
+        }catch(Exception e){
+            response.getWriter().append("error");
+            e.printStackTrace();
+        }
+    }
+
+    /**
+     *  修改username接口
+     */
+    @RequestMapping("/modifyUsername")
+    @ResponseBody
+    public void modifyUsername(HttpServletRequest request, HttpServletResponse response) throws IOException {
+        JSONObject jsonObject=JSONUtils.getJsonObjFromRequest(request);
+        long userId=jsonObject.getLong("id");
+        String username=jsonObject.getString("username");
+        LOGGER.info("modifyUsername-userId:{},username:{}",userId,username);
+        if(!StringUtils.isBlank(username)){
+            User user=this.userDao.findById(userId);
+            user.setUsername(username);
+            User user1=this.userDao.save(user);
+            if(user1!=null){
+                response.getWriter().append("success");
+                return;
+            }
+        }
+        response.getWriter().append("error");
+    }
+
+    /**
+     *  修改个性签名接口
+     */
+    @RequestMapping("/modifySignature")
+    @ResponseBody
+    public void modifySignature(HttpServletRequest request, HttpServletResponse response) throws IOException {
+        JSONObject jsonObject=JSONUtils.getJsonObjFromRequest(request);
+        long userId=jsonObject.getLong("id");
+        String signature=jsonObject.getString("signature");
+        LOGGER.info("modifySignature-userId:{},signature:{}",userId,signature);
+        if(!StringUtils.isBlank(signature)){
+            User user=this.userDao.findById(userId);
+            user.setSignature(signature);
+            User user1=this.userDao.save(user);
+            if(user1!=null){
+                response.getWriter().append("success");
+                return;
+            }
+        }
+        response.getWriter().append("error");
+    }
+
+
+
+    /**
+     *  后端-分页展示所有用户详情
+     */
+    @RequestMapping(value = "/findAll",method = RequestMethod.GET)
+    @ResponseBody
+    public Map findAll(HttpServletRequest request){
+        String limitStr=request.getParameter("limit");
+        int pageSize=Integer.parseInt(StringUtils.isBlank(limitStr)?"10":limitStr);
+        String offsetStr=request.getParameter("offset");
+        int offset=Integer.parseInt(StringUtils.isBlank(offsetStr)?"0":offsetStr);
+        String searchStr=request.getParameter("search");
+        int page=offset==0?offset:offset/pageSize;
+        Page<User> userList=this.userService.findAllByPage(pageSize,page,searchStr);
+        Map<String,Object> data=new HashMap<>();
+        data.put("total",userList.getTotalElements());
+        data.put("rows",userList.getContent());
+        return data;
+    }
+
+    @RequestMapping("/toUserDetail")
+    public String toUserDetail(){
+        return "admin/userDetail";
+    }
 }

@@ -26,11 +26,10 @@ public class TaskController {
      */
     @RequestMapping("/addTask")
     public void addTask(HttpServletRequest request, HttpServletResponse response) throws IOException {
-        JSONObject jsonObject=JSONUtils.getJsonObjFromRequest(request);
-        String title=jsonObject.getString("title");
-        Integer count=jsonObject.getInt("count");
-        Integer priority=jsonObject.getInt("priority");
-        String expireDate=jsonObject.getString("expireDate");
-
+        JSONObject jsonObject = JSONUtils.getJsonObjFromRequest(request);
+        String title = jsonObject.getString("title");
+        Integer count = jsonObject.getInt("count");
+        Integer priority = jsonObject.getInt("priority");
+        String expireDate = jsonObject.getString("expireDate");
     }
 }
