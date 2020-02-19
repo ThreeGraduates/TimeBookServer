@@ -201,9 +201,9 @@ public class UserController {
         JSONObject todayObj=new JSONObject();
         todayObj.put("title", "今天");
         SimpleDateFormat sdf=new SimpleDateFormat("yyyy-MM-dd");
-        Integer sumTime=this.taskDao.getSumTimeByUserIdAndCreateDate(userId,sdf.format(new Date()));
+        Integer sumTime=this.taskDao.getSumTimeByUserIdAndExpireDate(userId,sdf.format(new Date()));
         todayObj.put("sumTime", user.getTomatoTime()*(sumTime==null?0:sumTime));
-        Integer taskCount=this.taskDao.getTaskCountByUserIdAndCreateDate(userId,sdf.format(new Date()));
+        Integer taskCount=this.taskDao.getTaskCountByUserIdAndExpireDate(userId,sdf.format(new Date()));
         todayObj.put("taskCount", taskCount==null?0:taskCount);
         array.add(todayObj);
         //index=2
@@ -212,17 +212,17 @@ public class UserController {
         Calendar calendar = new GregorianCalendar();
         calendar.setTime(new Date());
         calendar.add(calendar.DATE,1);
-        Integer tomorrowSumTime=this.taskDao.getSumTimeByUserIdAndCreateDate(userId,sdf.format(calendar.getTime()));
+        Integer tomorrowSumTime=this.taskDao.getSumTimeByUserIdAndExpireDate(userId,sdf.format(calendar.getTime()));
         tomorrowObj.put("sumTime", user.getTomatoTime()*(tomorrowSumTime==null?0:tomorrowSumTime));
-        Integer tomorrowTaskCount=this.taskDao.getTaskCountByUserIdAndCreateDate(userId,sdf.format(calendar.getTime()));
+        Integer tomorrowTaskCount=this.taskDao.getTaskCountByUserIdAndExpireDate(userId,sdf.format(calendar.getTime()));
         tomorrowObj.put("taskCount", tomorrowTaskCount==null?0:tomorrowTaskCount);
         array.add(tomorrowObj);
         //index=3
         JSONObject futureObj=new JSONObject();
         futureObj.put("title", "即将到来");
-        Integer futureSumTime=this.taskDao.getFutureSumTimeByUserIdAndCreateDate(userId,sdf.format(calendar.getTime()));
+        Integer futureSumTime=this.taskDao.getFutureSumTimeByUserIdAndExpireDate(userId,sdf.format(calendar.getTime()));
         futureObj.put("sumTime", user.getTomatoTime()*(futureSumTime==null?0:futureSumTime));
-        Integer futureTaskCount=this.taskDao.getFutureTaskCountByUserIdAndCreateDate(userId,sdf.format(calendar.getTime()));
+        Integer futureTaskCount=this.taskDao.getFutureTaskCountByUserIdAndExpireDate(userId,sdf.format(calendar.getTime()));
         futureObj.put("taskCount", futureTaskCount==null?0:futureTaskCount);
         array.add(futureObj);
         //自定义清单

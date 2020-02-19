@@ -13,17 +13,17 @@ public interface TaskDao extends JpaRepository<Task,Long> {
     List<Task> findByUserId(Long userId);
     List<Task> findByUserIdAndFlag(Long userId,Integer flag);
 
-    @Query(value = "select sum(count) from `task` where user_id=?1 and create_date=?2",nativeQuery = true)
-    Integer getSumTimeByUserIdAndCreateDate(Long userId, String createDate);
+    @Query(value = "select sum(count) from `task` where user_id=?1 and expire_date=?2",nativeQuery = true)
+    Integer getSumTimeByUserIdAndExpireDate(Long userId, String expireDate);
 
-    @Query(value = "select count(*) from `task` where user_id=?1 and create_date=?2",nativeQuery = true)
-    Integer getTaskCountByUserIdAndCreateDate(Long userId, String createDate);
+    @Query(value = "select count(*) from `task` where user_id=?1 and expire_date=?2",nativeQuery = true)
+    Integer getTaskCountByUserIdAndExpireDate(Long userId, String expireDate);
 
-    @Query(value = "select sum(count) from `task` where user_id=?1 and create_date>?2",nativeQuery = true)
-    Integer getFutureSumTimeByUserIdAndCreateDate(Long userId, String createDate);
+    @Query(value = "select sum(count) from `task` where user_id=?1 and expire_date>?2",nativeQuery = true)
+    Integer getFutureSumTimeByUserIdAndExpireDate(Long userId, String expireDate);
 
-    @Query(value = "select count(*) from `task` where user_id=?1 and create_date>?2",nativeQuery = true)
-    Integer getFutureTaskCountByUserIdAndCreateDate(Long userId, String createDate);
+    @Query(value = "select count(*) from `task` where user_id=?1 and expire_date>?2",nativeQuery = true)
+    Integer getFutureTaskCountByUserIdAndExpireDate(Long userId, String expireDate);
 
     @Query(value = "select sum(count) from `task` where user_id=?1 and checklist_id=?2",nativeQuery = true)
     Integer getSumTimeByUserIdAndChecklistId(Long userId,Long checklistId);
