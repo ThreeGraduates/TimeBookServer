@@ -1,65 +1,74 @@
-<%--
-  Created by IntelliJ IDEA.
-  User: LIU
-  Date: 2020/2/17
-  Time: 18:00
-  To change this template use File | Settings | File Templates.
---%>
-<%@ page contentType="text/html;charset=UTF-8" language="java" %>
+<%@ page contentType="text/html;charset=UTF-8" %>
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+<c:set var="ctx" value="${pageContext.request.contextPath}"/>
 <html>
 <head>
-    <title>图标统计</title>
-</head>
-<body>
-
-<script>
-    (function($) { // encapsulate jQuery
-        $(document).ready(function() {
-            var xx = [];
-            var yy = [];
-            for (var i = 1; i <$('#table tr').length; i++) {
-                xx.push(parseFloat($('#table tr').eq(i).children("td").eq(0).text().trim()));
-                yy.push(parseFloat($('#table tr').eq(i).children("td").eq(2).text()));
-            }
+    <title>图表统计</title>
+    <link type="image/x-icon" href="${ctx}/static/images/favicon.ico" rel="shortcut icon">
+    <script src="${ctx}/static/js/jquery.min.js" type="text/javascript"></script>
+    <script src="${ctx}/static/js/highcharts.js" type="text/javascript"></script>
+    <script>
+        $(function() {
             var chart;
             chart = new Highcharts.Chart({
                 chart: {
-                    renderTo: 'container',
-                    plotBackgroundColor: null,
-                    plotBorderWidth: null,
-                    plotShadow: false
+                    renderTo: 'container',        //在哪个区域呈现，对应HTML中的一个元素ID
+                    plotBackgroundColor: null,  //绘图区的背景颜色
+                    plotBorderWidth: null,      //绘图区边框宽度
+                    plotShadow: false           //绘图区是否显示阴影
                 },
                 title: {
-                    text: '数据饼状图表'
+                    text: '${user.username}番茄任务完成情况'   //图表的主标题
                 },
-                tooltip: {
-                    formatter: function() {
-                        return '<b>' + this.point.name + '</b>: ' + this.percentage.toFixed(2) + ' %';
-                    }
+                tooltip: {     //当鼠标经过时的提示设置
+                    pointFormat: '{series.name}: <b>{point.percentage:.1f}%</b>'
                 },
-                plotOptions: {
+                //每种图表类型属性设置
+                plotOptions: {   //饼状图
                     pie: {
                         allowPointSelect: true,
                         cursor: 'pointer',
                         dataLabels: {
                             enabled: true,
-                            color: '#000000',
-                            connectorColor: '#000000',
-                            formatter: function() {
-                                return '<b>' + this.point.name + '</b>: ' + this.percentage.toFixed(2) + ' %';
+                            format: '<b>{point.name}</b>: {point.percentage:.1f} %',
+                            style: {
+                                color: (Highcharts.theme && Highcharts.theme.contrastTextColor) || 'black'
                             }
                         }
                     }
                 },
-                series: [{
-                    type: 'pie',
-                    name: 'pie',
-                    data:   yy
+                series: [{         //图表要展现的数据
+                    type: 'pie',   //描述了数据列类型。默认值为 "line"
+                    name: '番茄任务完成情况'
                 }]
             });
 
+            //异步请求数据
+            $.ajax({
+                type:"post",
+                url:'${ctx}/user/getPieChart',//提供数据的Servlet
+                data:{
+                    'userId':'${user.id}'
+                },
+                success:function(data){
+                    console.log(data);
+                    browsers = [],
+                    //迭代，把异步获取的数据放到数组中
+                    $.each(data,function(i,d){
+                        browsers.push([d.name,d.share]);
+                    });
+                    //设置数据
+                    chart.series[0].setData(browsers);
+                },
+                error:function(e){
+                    alert(e);
+                }
+            });
         });
-    })(jQuery);
-</script>
+    </script>
+</head>
+<body>
+<div id="container" style="min-width:800px;height:400px;"></div>
+
 </body>
 </html>

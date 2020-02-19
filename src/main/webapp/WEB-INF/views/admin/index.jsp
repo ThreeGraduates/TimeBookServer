@@ -89,7 +89,7 @@
 
     function toUserDetail(userId) {
         console.log(userId);
-        location.href="${ctx}/user/toUserDetail";
+        location.href="${ctx}/user/toUserDetail?userId="+userId;
     }
 </script>
 </body>

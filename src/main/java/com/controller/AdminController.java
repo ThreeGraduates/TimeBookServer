@@ -9,6 +9,8 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 
+import javax.servlet.http.HttpSession;
+
 /**
  * 后台管理系统
  */
@@ -28,7 +30,7 @@ public class AdminController {
 
     @RequestMapping("/loginAuth")
     @ResponseBody
-    public String loginAuth(String username,String pwd){
+    public String loginAuth(String username, String pwd, HttpSession session){
         if(!StringUtils.isBlank(username)&&!StringUtils.isBlank(pwd)){
             Admin admin=this.adminDao.findByName(username);
             if(admin!=null){
@@ -39,6 +41,7 @@ public class AdminController {
                 return "账号不存在";
             }
         }
+        session.setAttribute("username",username);
         return "登录成功";
     }
 
