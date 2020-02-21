@@ -28,7 +28,7 @@ public class TaskListController {
     public void saveTaskList(HttpServletRequest request, HttpServletResponse response) throws IOException {
         JSONObject jsonObject= JSONUtils.getJsonObjFromRequest(request);
         String title=jsonObject.getString("title");
-        String color=jsonObject.getString("color");
+        Integer color=jsonObject.getInt("colorId");
         Long userId=jsonObject.getLong("userId");
         TaskList taskList=this.taskListDao.save(new TaskList(title,new Date(),userId,color));
         if(taskList!=null){
