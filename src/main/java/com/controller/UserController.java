@@ -17,6 +17,8 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.converter.HttpMessageNotReadableException;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
@@ -27,8 +29,7 @@ import javax.mail.internet.MimeMessage;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
-import java.io.File;
-import java.io.IOException;
+import java.io.*;
 import java.text.DecimalFormat;
 import java.text.SimpleDateFormat;
 import java.util.*;
@@ -88,7 +89,7 @@ public class UserController {
         User user=new User(email,password);
         user.setUsername(email);
         user.setSignature("珍惜时间，珍惜当下");
-        user.setImage("/static/upload/headImg.png");
+        user.setImage("static/upload/headImg.png");
         user.setTomatoTime(25);
         user.setShortBreak(5);
         user.setLongBreak(15);
@@ -234,6 +235,7 @@ public class UserController {
             obj.put("sumTime",user.getTomatoTime()*(time==null?0:time));
             Integer count=this.taskDao.getTaskCountByUserIdAndChecklistId(userId,list.getId());
             obj.put("taskCount",count==null?0:count);
+            obj.put("colorId",list.getColorId());
             array.add(obj);
         }
         response.getWriter().append(array.toString());
@@ -319,6 +321,50 @@ public class UserController {
         response.getWriter().append("error");
     }
 
+    /**
+     * 设置页面接口
+     */
+    @RequestMapping("/getTomatoTimeSetup")
+    @ResponseBody
+    public void getTomatoTimeSetup(HttpServletRequest request,HttpServletResponse response) throws IOException {
+        response.setHeader("Content-type", "text/html;charset=UTF-8");
+        response.setCharacterEncoding("UTF-8");
+        Long userId=Long.parseLong(request.getParameter("userId"));
+        User user=this.userDao.findById(userId);
+        JSONObject obj=new JSONObject();
+        obj.put("num1", user.getTomatoTime());
+        obj.put("num2", user.getShortBreak());
+        obj.put("num3", user.getLongBreak());
+        obj.put("num4", user.getLongRestInterval());
+        response.getWriter().append(obj.toString());
+    }
+
+    /**
+     *  修改设置页面番茄任务属性接口
+     */
+    @RequestMapping("/alterTomatoTimeSetup")
+    @ResponseBody
+    public void alterTomatoTimeSetup(HttpServletRequest request,HttpServletResponse response) throws IOException {
+        JSONObject jsonObject=JSONUtils.getJsonObjFromRequest(request);
+        LOGGER.info("jsonObject:{}",jsonObject.toString());
+        long userId=jsonObject.getLong("userId");
+        Integer num1=jsonObject.getInt("num1");
+        Integer num2=jsonObject.getInt("num2");
+        Integer num3=jsonObject.getInt("num3");
+        Integer num4=jsonObject.getInt("num4");
+        User user=this.userDao.findById(userId);
+        LOGGER.info("userId:{},num1:{},num2:{},num3:{},num4:{}",userId,num1,num2,num3,num4);
+        user.setTomatoTime(num1);
+        user.setShortBreak(num2);
+        user.setLongBreak(num3);
+        user.setLongRestInterval(num4);
+        User user1=this.userDao.save(user);
+        if(user1!=null){
+            response.getWriter().append("success");
+        }else{
+            response.getWriter().append("error");
+        }
+    }
 
 
     /**

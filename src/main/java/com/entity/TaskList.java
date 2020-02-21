@@ -16,12 +16,12 @@ public class TaskList {
     private String title;
     private Date createTime;
     private Long userId;
-    private String color;
+    private Integer colorId;
 
-    public TaskList(String title, Date createTime, Long userId, String color) {
+    public TaskList(String title, Date createTime, Long userId, Integer colorId) {
         this.title = title;
         this.createTime = createTime;
         this.userId = userId;
-        this.color = color;
+        this.colorId = colorId;
     }
 }
