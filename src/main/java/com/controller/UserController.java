@@ -322,24 +322,6 @@ public class UserController {
     }
 
     /**
-     * 设置页面接口
-     */
-    @RequestMapping("/getTomatoTimeSetup")
-    @ResponseBody
-    public void getTomatoTimeSetup(HttpServletRequest request,HttpServletResponse response) throws IOException {
-        response.setHeader("Content-type", "text/html;charset=UTF-8");
-        response.setCharacterEncoding("UTF-8");
-        Long userId=Long.parseLong(request.getParameter("userId"));
-        User user=this.userDao.findById(userId);
-        JSONObject obj=new JSONObject();
-        obj.put("num1", user.getTomatoTime());
-        obj.put("num2", user.getShortBreak());
-        obj.put("num3", user.getLongBreak());
-        obj.put("num4", user.getLongRestInterval());
-        response.getWriter().append(obj.toString());
-    }
-
-    /**
      *  修改设置页面番茄任务属性接口
      */
     @RequestMapping("/alterTomatoTimeSetup")
@@ -347,11 +329,11 @@ public class UserController {
     public void alterTomatoTimeSetup(HttpServletRequest request,HttpServletResponse response) throws IOException {
         JSONObject jsonObject=JSONUtils.getJsonObjFromRequest(request);
         LOGGER.info("jsonObject:{}",jsonObject.toString());
-        long userId=jsonObject.getLong("userId");
-        Integer num1=jsonObject.getInt("num1");
-        Integer num2=jsonObject.getInt("num2");
-        Integer num3=jsonObject.getInt("num3");
-        Integer num4=jsonObject.getInt("num4");
+        long userId=jsonObject.getLong("id");
+        Integer num1=jsonObject.getInt("tomatoTime");
+        Integer num2=jsonObject.getInt("shortBreak");
+        Integer num3=jsonObject.getInt("longBreak");
+        Integer num4=jsonObject.getInt("longRestInterval");
         User user=this.userDao.findById(userId);
         LOGGER.info("userId:{},num1:{},num2:{},num3:{},num4:{}",userId,num1,num2,num3,num4);
         user.setTomatoTime(num1);
@@ -364,6 +346,29 @@ public class UserController {
         }else{
             response.getWriter().append("error");
         }
+    }
+
+    /**
+     * 个人中心-得到用户详情接口
+     */
+    @RequestMapping("/getUserDetailSetup")
+    @ResponseBody
+    public void getUserDetailSetup(HttpServletRequest request,HttpServletResponse response) throws IOException {
+        response.setHeader("Content-type", "text/html;charset=UTF-8");
+        response.setCharacterEncoding("UTF-8");
+        Long userId=Long.parseLong(request.getParameter("userId"));
+        User user=this.userDao.findById(userId);
+        JSONObject obj=new JSONObject();
+        obj.put("id",user.getId());
+        obj.put("username", user.getUsername());
+        obj.put("image", user.getImage());
+        obj.put("email", user.getEmail());
+        obj.put("password", user.getPassword());
+        obj.put("tomatoTime",user.getTomatoTime());
+        obj.put("shortBreak",user.getShortBreak());
+        obj.put("longBreak",user.getLongBreak());
+        obj.put("longRestInterval",user.getLongRestInterval());
+        response.getWriter().append(obj.toString());   //必须为jsonObject对象
     }
 
 
