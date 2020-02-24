@@ -244,36 +244,31 @@ public class UserController {
     /**
      *  上传用户头像接口
      */
-    @RequestMapping("/uploadUserImage")
+    @RequestMapping("/uploadUserImage/{userId}")
     @ResponseBody
-    public void uploadUserImage(HttpServletRequest request, HttpServletResponse response) throws IOException {
-        Long userId = 0l;
-        DiskFileItemFactory factory = new DiskFileItemFactory();
-        ServletFileUpload upload = new ServletFileUpload(factory);
-        try{
-            List<FileItem> list = upload.parseRequest(request);
-            for(FileItem item:list) {
-                User user=null;
-                if(item.isFormField()) {
-                    userId = Long.parseLong(item.getString());
-                    user=this.userDao.findById(userId);
-                }else{
-                    String pathName = item.getName();
-                    String fileName = pathName.substring(pathName.lastIndexOf("\\")+1);
-                    String serverPath = request.getServletContext().getRealPath("/");
-                    item.write(new File(serverPath+"\\upload\\"+user.getId()+"\\"+fileName));
-                    user.setImage("/upload/"+user.getId()+"/"+fileName);
-                    User user1=this.userDao.save(user);
-                    if(user1!=null){
-                        response.getWriter().append("success");
-                    }else{
-                        response.getWriter().append("error");
-                    }
-                }
+    public void uploadUserImage(HttpServletRequest request, HttpServletResponse response,@PathVariable("userId") Long userId) throws IOException {
+        LOGGER.info("userId:{}",userId);
+        response.setContentType("text/html;charset=utf-8");
+        InputStream is=request.getInputStream();
+        //getRealPath()可以将服务器上的一个相对路径转为绝对路径
+        String file=request.getServletContext().getRealPath("upload/"+userId+".jpg");
+        FileOutputStream out=new FileOutputStream(file);
+        if(is.available()>0) {    //输入流长度
+            int b=-1;
+            while((b=is.read())!=-1) {
+                out.write(b);
+                out.flush();
             }
-        }catch(Exception e){
-            response.getWriter().append("error");
-            e.printStackTrace();
+            is.close();
+            out.close();
+            User user=this.userDao.findById(userId);
+            user.setImage("upload/"+userId+".jpg");
+            this.userDao.save(user);
+            response.getWriter().println("上传图片成功");
+        }else {
+            is.close();
+            out.close();
+            response.getWriter().println("上传图片失败");
         }
     }
 
@@ -340,6 +335,30 @@ public class UserController {
         user.setShortBreak(num2);
         user.setLongBreak(num3);
         user.setLongRestInterval(num4);
+        User user1=this.userDao.save(user);
+        if(user1!=null){
+            response.getWriter().append("success");
+        }else{
+            response.getWriter().append("error");
+        }
+    }
+
+    /**
+     *  个人中心--修改用户名接口
+     */
+    @RequestMapping("/alterUser/{flag}")
+    @ResponseBody
+    public void alterUsername(HttpServletRequest request,HttpServletResponse response,@PathVariable("flag") String flag) throws IOException {
+        JSONObject jsonObject=JSONUtils.getJsonObjFromRequest(request);
+        long userId=jsonObject.getLong("id");
+        User user=this.userDao.findById(userId);
+        if("username".equals(flag)){
+            String username=jsonObject.getString("username");
+            user.setUsername(username);
+        }else if("password".equals(flag)){
+            String password=jsonObject.getString("password");
+            user.setPassword(password);
+        }
         User user1=this.userDao.save(user);
         if(user1!=null){
             response.getWriter().append("success");
