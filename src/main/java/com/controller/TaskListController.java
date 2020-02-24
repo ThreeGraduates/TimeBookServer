@@ -96,7 +96,7 @@ public class TaskListController {
             SimpleDateFormat sdf2= new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
             if(task.getStartDatetime()!=null){ obj.put("startDatetime",sdf2.format(task.getStartDatetime()));}
             if(task.getCompleteDatetime()!=null){obj.put("completeDatetime",sdf2.format(task.getCompleteDatetime()));}
-            obj.put("userTime",task.getUseTime());
+            obj.put("useTime",task.getUseTime());
             obj.put("repeat",task.getRepeat());
             obj.put("remark",task.getRemark());
             array.add(obj);
