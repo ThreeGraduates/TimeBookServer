@@ -22,10 +22,7 @@ import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.util.Calendar;
-import java.util.Date;
-import java.util.GregorianCalendar;
-import java.util.List;
+import java.util.*;
 
 @Controller
 @RequestMapping("/taskList")
@@ -100,6 +97,77 @@ public class TaskListController {
             obj.put("repeat",task.getRepeat());
             obj.put("remark",task.getRemark());
             array.add(obj);
+        }
+        response.getWriter().append(array.toString());
+    }
+
+    /**
+     * 今天、明天、即将到来任务列表
+     */
+    @RequestMapping("/getTasksTodayAndTomorrowAndSoon")
+    @ResponseBody
+    public void getTasksTodayAndTomorrowAndSoon(HttpServletRequest request,HttpServletResponse response) throws IOException {
+        response.setHeader("Content-type", "text/html;charset=UTF-8");
+        response.setCharacterEncoding("UTF-8");
+        Integer flag=Integer.parseInt(request.getParameter("flag"));
+        Long userId=Long.parseLong(request.getParameter("userId"));
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+        List<Task> tasks=new ArrayList<>();
+        if(flag==0){ //今天
+            tasks=this.taskDao.findByUserIdAndCreateDateOrExpireDate(userId,sdf.format(new Date()));
+        }else{
+            Calendar calendar = new GregorianCalendar();
+            calendar.setTime(new Date());
+            calendar.add(calendar.DATE,1);
+            if(flag==1){  //明天
+                tasks=this.taskDao.findByUserIdAndCreateDateOrExpireDate(userId,sdf.format(calendar.getTime()));
+            }else{    //即将到来
+                tasks=this.taskDao.findTasksComeSoon(userId,sdf.format(calendar.getTime()));
+            }
+        }
+        JSONArray array=new JSONArray();
+        for(Task task:tasks){
+            JSONObject obj=new JSONObject();
+            TaskList taskList=this.taskListDao.findOne(task.getChecklistId());
+            obj.put("list_title",taskList.getTitle());
+            obj.put("list_colorId",taskList.getColorId());
+            //任务详情
+            obj.put("id",task.getId());
+            obj.put("title",task.getTitle());
+            obj.put("count",task.getCount());
+            obj.put("flag",task.getFlag());
+            obj.put("priority",task.getPriority());
+            if(task.getCreateDate()!=null){ obj.put("createDate",sdf.format(task.getCreateDate())); }
+            if(task.getExpireDate()!=null){obj.put("expireDate",sdf.format(task.getExpireDate()));}
+            SimpleDateFormat sdf2= new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+            if(task.getStartDatetime()!=null){ obj.put("startDatetime",sdf2.format(task.getStartDatetime()));}
+            if(task.getCompleteDatetime()!=null){obj.put("completeDatetime",sdf2.format(task.getCompleteDatetime()));}
+            obj.put("useTime",task.getUseTime());
+            obj.put("repeat",task.getRepeat());
+            obj.put("remark",task.getRemark());
+            array.add(obj);
+        }
+        response.getWriter().append(array.toString());
+    }
+
+
+    /**
+     * 清单管理，获取清单列表
+     */
+    @RequestMapping("/getTaskListsTaskByUserId")
+    @ResponseBody
+    public void getUserDetailSetup(HttpServletRequest request,HttpServletResponse response) throws IOException {
+        response.setHeader("Content-type", "text/html;charset=UTF-8");
+        response.setCharacterEncoding("UTF-8");
+        Long userId=Long.parseLong(request.getParameter("userId"));
+        List<TaskList> taskLists=this.taskListDao.findByUserId(userId);
+        JSONArray array=new JSONArray();
+        for(TaskList list:taskLists){
+            JSONObject object=new JSONObject();
+            object.put("id",list.getId());
+            object.put("title",list.getTitle());
+            object.put("colorId",list.getColorId());
+            array.add(object);
         }
         response.getWriter().append(array.toString());
     }

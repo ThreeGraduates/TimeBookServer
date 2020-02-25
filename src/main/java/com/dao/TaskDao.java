@@ -47,4 +47,13 @@ public interface TaskDao extends JpaRepository<Task,Long> {
 
     @Query(value = "select count(*) from `task` where checklist_id=?1 and flag=?2",nativeQuery = true)
     Integer getCountByChecklistIdAndFlag(Long checklistId,Integer flag);
+
+    /**
+     * 获取今天、明天、即将到来任务列表
+     */
+    @Query(value = "select * from `task` where user_id=?1 and (create_date=?2 or expire_date=?2)",nativeQuery = true)
+    List<Task> findByUserIdAndCreateDateOrExpireDate(Long userId,String date);
+
+    @Query(value = "select * from `task` where user_id=?1 and (create_date>?2 or expire_date>?2)",nativeQuery = true)
+    List<Task> findTasksComeSoon(Long userId,String date);
 }
