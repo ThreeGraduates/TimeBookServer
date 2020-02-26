@@ -56,52 +56,6 @@ public class TaskListController {
     }
 
     /**
-     *  点击清单，获取清单任务列表
-     */
-    @RequestMapping("/getTasksByListId")
-    @ResponseBody
-    public void getTasksByListId(HttpServletRequest request,HttpServletResponse response) throws IOException {
-        response.setHeader("Content-type", "text/html;charset=UTF-8");
-        response.setCharacterEncoding("UTF-8");
-        Long listId=Long.parseLong(request.getParameter("taskListId"));
-        TaskList taskList=this.taskListDao.findOne(listId);
-        User user=this.userDao.findById(taskList.getUserId());
-
-        Integer sumTime=this.taskDao.getAllTomatoCountByChecklistIdAndFlag(listId,0)*user.getTomatoTime();
-        Integer usedTime=this.taskDao.getUsedTimeByChecklistIdAndFlag(listId,0);
-
-        JSONArray array=new JSONArray();
-        // index=0
-        JSONObject obj1=new JSONObject();
-        obj1.put("estimatedTime", sumTime-usedTime);
-        obj1.put("usedTime", this.taskDao.getUsedTimeByChecklistId(listId));
-        obj1.put("unfinishedTask", this.taskDao.getCountByChecklistIdAndFlag(listId,0));
-        obj1.put("finishedTask", this.taskDao.getCountByChecklistIdAndFlag(listId,1));
-        array.add(obj1);
-        // 任务详情列表
-        List<Task> tasks=this.taskDao.findByChecklistId(listId);
-        for(Task task:tasks){
-            JSONObject obj=new JSONObject();
-            obj.put("id",task.getId());
-            obj.put("title",task.getTitle());
-            obj.put("count",task.getCount());
-            obj.put("flag",task.getFlag());
-            obj.put("priority",task.getPriority());
-            SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
-            if(task.getCreateDate()!=null){ obj.put("createDate",sdf.format(task.getCreateDate())); }
-            if(task.getExpireDate()!=null){obj.put("expireDate",sdf.format(task.getExpireDate()));}
-            SimpleDateFormat sdf2= new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-            if(task.getStartDatetime()!=null){ obj.put("startDatetime",sdf2.format(task.getStartDatetime()));}
-            if(task.getCompleteDatetime()!=null){obj.put("completeDatetime",sdf2.format(task.getCompleteDatetime()));}
-            obj.put("useTime",task.getUseTime());
-            obj.put("repeat",task.getRepeat());
-            obj.put("remark",task.getRemark());
-            array.add(obj);
-        }
-        response.getWriter().append(array.toString());
-    }
-
-    /**
      * 今天、明天、即将到来任务列表
      */
     @RequestMapping("/getTasksTodayAndTomorrowAndSoon")
@@ -150,6 +104,52 @@ public class TaskListController {
         response.getWriter().append(array.toString());
     }
 
+    /**
+     *  点击清单，获取清单任务列表
+     */
+    @RequestMapping("/getTasksByListId")
+    @ResponseBody
+    public void getTasksByListId(HttpServletRequest request,HttpServletResponse response) throws IOException {
+        response.setHeader("Content-type", "text/html;charset=UTF-8");
+        response.setCharacterEncoding("UTF-8");
+        Long listId=Long.parseLong(request.getParameter("taskListId"));
+        TaskList taskList=this.taskListDao.findOne(listId);
+        User user=this.userDao.findById(taskList.getUserId());
+
+        Integer sumTime=this.taskDao.getAllTomatoCountByChecklistIdAndFlag(listId,0)*user.getTomatoTime();
+        Integer usedTime=this.taskDao.getUsedTimeByChecklistIdAndFlag(listId,0);
+
+        JSONArray array=new JSONArray();
+        // index=0
+        JSONObject obj1=new JSONObject();
+        obj1.put("estimatedTime", sumTime-usedTime);
+        obj1.put("usedTime", this.taskDao.getUsedTimeByChecklistId(listId));
+        obj1.put("unfinishedTask", this.taskDao.getCountByChecklistIdAndFlag(listId,0));
+        obj1.put("finishedTask", this.taskDao.getCountByChecklistIdAndFlag(listId,1));
+        array.add(obj1);
+        // 任务详情列表
+        List<Task> tasks=this.taskDao.findByChecklistId(listId);
+        for(Task task:tasks){
+            JSONObject obj=new JSONObject();
+            obj.put("id",task.getId());
+            obj.put("title",task.getTitle());
+            obj.put("count",task.getCount());
+            obj.put("flag",task.getFlag());
+            obj.put("priority",task.getPriority());
+            SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+            if(task.getCreateDate()!=null){ obj.put("createDate",sdf.format(task.getCreateDate())); }
+            if(task.getExpireDate()!=null){obj.put("expireDate",sdf.format(task.getExpireDate()));}
+            SimpleDateFormat sdf2= new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+            if(task.getStartDatetime()!=null){ obj.put("startDatetime",sdf2.format(task.getStartDatetime()));}
+            if(task.getCompleteDatetime()!=null){obj.put("completeDatetime",sdf2.format(task.getCompleteDatetime()));}
+            obj.put("useTime",task.getUseTime());
+            obj.put("repeat",task.getRepeat());
+            obj.put("remark",task.getRemark());
+            array.add(obj);
+        }
+        response.getWriter().append(array.toString());
+    }
+
 
     /**
      * 清单管理，获取清单列表
@@ -170,5 +170,21 @@ public class TaskListController {
             array.add(object);
         }
         response.getWriter().append(array.toString());
+    }
+
+    /**
+     * 删除清单接口
+     */
+    @RequestMapping("/deleteTaskListById")
+    @ResponseBody
+    public void deleteTaskListById(HttpServletRequest request,HttpServletResponse response) throws IOException {
+        response.setHeader("Content-type", "text/html;charset=UTF-8");
+        response.setCharacterEncoding("UTF-8");
+        Long listId=Long.parseLong(request.getParameter("id"));
+        //删除清单
+        this.taskListDao.delete(listId);
+        //删除该清单下的任务
+        this.taskDao.deleteByChecklistId(listId);
+        response.getWriter().append("success");
     }
 }

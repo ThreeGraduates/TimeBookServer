@@ -2,9 +2,11 @@ package com.dao;
 
 import com.entity.Task;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
 
+import javax.transaction.Transactional;
 import java.util.Date;
 import java.util.List;
 
@@ -56,4 +58,8 @@ public interface TaskDao extends JpaRepository<Task,Long> {
 
     @Query(value = "select * from `task` where user_id=?1 and (create_date>?2 or expire_date>?2)",nativeQuery = true)
     List<Task> findTasksComeSoon(Long userId,String date);
+
+    @Modifying
+    @Transactional
+    void deleteByChecklistId(Long id);
 }
