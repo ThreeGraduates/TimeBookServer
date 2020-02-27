@@ -197,6 +197,11 @@ public class UserController {
         userObj.put("username", user.getUsername());
         userObj.put("image", user.getImage());
         userObj.put("signature", user.getSignature());
+
+        userObj.put("tomatoTime",user.getTomatoTime());
+        userObj.put("shortBreak",user.getShortBreak());
+        userObj.put("longBreak",user.getLongBreak());
+        userObj.put("longRestInterval",user.getLongRestInterval());
         array.add(userObj);
         //index=1
         JSONObject todayObj=new JSONObject();
@@ -358,6 +363,9 @@ public class UserController {
         }else if("password".equals(flag)){
             String password=jsonObject.getString("password");
             user.setPassword(password);
+        }else if("signature".equals(flag)){
+            String signature=jsonObject.getString("signature");
+            user.setSignature(signature);
         }
         User user1=this.userDao.save(user);
         if(user1!=null){
@@ -387,35 +395,11 @@ public class UserController {
         obj.put("shortBreak",user.getShortBreak());
         obj.put("longBreak",user.getLongBreak());
         obj.put("longRestInterval",user.getLongRestInterval());
+        obj.put("signature",user.getSignature());
         response.getWriter().append(obj.toString());   //必须为jsonObject对象
     }
 
 
-    /**
-     *  后端-分页展示所有用户详情
-     */
-    @RequestMapping(value = "/findAll",method = RequestMethod.GET)
-    @ResponseBody
-    public Map findAll(HttpServletRequest request){
-        String limitStr=request.getParameter("limit");
-        int pageSize=Integer.parseInt(StringUtils.isBlank(limitStr)?"10":limitStr);
-        String offsetStr=request.getParameter("offset");
-        int offset=Integer.parseInt(StringUtils.isBlank(offsetStr)?"0":offsetStr);
-        String searchStr=request.getParameter("search");
-        int page=offset==0?offset:offset/pageSize;
-        Page<User> userList=this.userService.findAllByPage(pageSize,page,searchStr);
-        Map<String,Object> data=new HashMap<>();
-        data.put("total",userList.getTotalElements());
-        data.put("rows",userList.getContent());
-        return data;
-    }
-
-    @RequestMapping("/toUserDetail")
-    public String toUserDetail(Long userId,Model model){
-        User user=this.userDao.findById(userId);
-        model.addAttribute("user",user);
-        return "admin/userDetail";
-    }
 
     /**
      *  饼状图显示用户番茄闹钟完成情况

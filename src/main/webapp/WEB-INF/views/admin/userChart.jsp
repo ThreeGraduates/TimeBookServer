@@ -5,7 +5,9 @@
 <head>
     <title>图表统计</title>
     <link type="image/x-icon" href="${ctx}/static/images/favicon.ico" rel="shortcut icon">
+    <link href="${ctx}/static/css/bootstrap3.min.css" rel="stylesheet" type="text/css"/>
     <script src="${ctx}/static/js/jquery.min.js" type="text/javascript"></script>
+    <script src="${ctx}/static/js/bootstrap3.min.js" type="text/javascript"></script>
     <script src="${ctx}/static/js/highcharts.js" type="text/javascript"></script>
     <script>
         $(function() {
@@ -68,7 +70,24 @@
     </script>
 </head>
 <body>
-<div id="container" style="min-width:800px;height:400px;"></div>
+<span>
+    统计
+    <!-- Single button -->
+<div class="btn-group">
+  <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+    Action <span class="caret"></span>
+  </button>
+  <ul class="dropdown-menu">
+    <li><a href="#">Action</a></li>
+    <li><a href="#">Another action</a></li>
+    <li><a href="#">Something else here</a></li>
+    <li role="separator" class="divider"></li>
+    <li><a href="#">Separated link</a></li>
+  </ul>
+</div>
+</span>
+<div id="container" style="min-width:800px;height:400px;">
 
+</div>
 </body>
 </html>

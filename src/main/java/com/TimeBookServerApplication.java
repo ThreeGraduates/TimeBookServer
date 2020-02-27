@@ -8,7 +8,7 @@ import org.springframework.boot.web.servlet.ServletComponentScan;
  *  spring boot启动类
  */
 
-//@ServletComponentScan
+@ServletComponentScan
 @SpringBootApplication
 public class TimeBookServerApplication {
     public static void main(String[] args){

@@ -77,7 +77,7 @@
                 data: $('#loginForm').serialize(),
                 success: function (result) {
                     if(result=="登录成功"){
-                        location.href="${ctx}/admin/toIndex"
+                        location.href="${ctx}/admin/index"
                     }else{
                         $("#info").show();
                         $("#info").text(result);

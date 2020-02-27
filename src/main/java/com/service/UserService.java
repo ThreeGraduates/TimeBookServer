@@ -22,13 +22,17 @@ public class UserService {
     @Autowired
     private UserDao userDao;
 
-    public Page<User> findAllByPage(int pageSize, int page, final String search){
+    public Page<User> findAllByPage(int pageSize, int page, final String username,final String email){
         Specification<User> spec=new Specification<User>() {
             @Override
             public Predicate toPredicate(Root<User> root, CriteriaQuery<?> query, CriteriaBuilder cb) {
                 List<Predicate> predicateList=new ArrayList<>();
-                if(!StringUtils.isEmpty(search)){
-                    Predicate p=cb.like(root.<String>get("username"),'%'+search+'%');
+                if(!StringUtils.isEmpty(username)){
+                    Predicate p=cb.like(root.<String>get("username"),'%'+username+'%');
+                    predicateList.add(p);
+                }
+                if(!StringUtils.isEmpty(email)){
+                    Predicate p=cb.like(root.<String>get("email"),'%'+email+'%');
                     predicateList.add(p);
                 }
                 Predicate[] predicates = new Predicate[predicateList.size()];
