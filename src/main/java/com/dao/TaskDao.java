@@ -15,24 +15,45 @@ public interface TaskDao extends JpaRepository<Task,Long> {
     List<Task> findByUserId(Long userId);
     List<Task> findByUserIdAndFlag(Long userId,Integer flag);
 
-    @Query(value = "select sum(count) from `task` where user_id=?1 and expire_date=?2",nativeQuery = true)
-    Integer getSumTimeByUserIdAndExpireDate(Long userId, String expireDate);
+    /**
+     * 得到今天、明天任务总用时
+     */
+    @Query(value = "select sum(count) from `task` where user_id=?1 and (create_date=?2 or expire_date=?2)",nativeQuery = true)
+    Integer getSumTimeByUserIdAndExpireDateAndCreateDate(Long userId, String expireDate);
 
-    @Query(value = "select count(*) from `task` where user_id=?1 and expire_date=?2",nativeQuery = true)
-    Integer getTaskCountByUserIdAndExpireDate(Long userId, String expireDate);
+    /**
+     * 得到今天、明天任务总的已用时间
+     */
+    @Query(value = "select sum(use_time) from `task` where user_id=?1 and (create_date=?2 or expire_date=?2)",nativeQuery = true)
+    Integer getUseTimeByUserIdAndExpireDateAndCreateDate(Long userId, String expireDate);
 
-    @Query(value = "select sum(count) from `task` where user_id=?1 and expire_date>?2",nativeQuery = true)
-    Integer getFutureSumTimeByUserIdAndExpireDate(Long userId, String expireDate);
+    /**
+     * 得到即将到来任务总用时
+     */
+    @Query(value = "select sum(count) from `task` where user_id=?1 and (create_date>?2 or expire_date>?2)",nativeQuery = true)
+    Integer getSoonSumTimeByUserIdAndExpireDateAndCreateDate(Long userId, String expireDate);
 
-    @Query(value = "select count(*) from `task` where user_id=?1 and expire_date>?2",nativeQuery = true)
-    Integer getFutureTaskCountByUserIdAndExpireDate(Long userId, String expireDate);
+    /**
+     * 得到即将到来任务总的已用时间
+     */
+    @Query(value = "select sum(use_time) from `task` where user_id=?1 and (create_date>?2 or expire_date>?2)",nativeQuery = true)
+    Integer getSoonUseTimeByUserIdAndExpireDateAndCreateDate(Long userId, String expireDate);
 
+    /**
+     * 得到清单任务总用时
+     */
     @Query(value = "select sum(count) from `task` where user_id=?1 and checklist_id=?2",nativeQuery = true)
     Integer getSumTimeByUserIdAndChecklistId(Long userId,Long checklistId);
-
+    /**
+     * 得到清单任务总的已用时间
+     */
+    @Query(value = "select sum(use_time) from `task` where user_id=?1 and checklist_id=?2",nativeQuery = true)
+    Integer getUseTimeByUserIdAndChecklistId(Long userId,Long checklistId);
+    /**
+     * 得到清单任务总数
+     */
     @Query(value = "select count(*) from `task` where user_id=?1 and checklist_id=?2",nativeQuery = true)
     Integer getTaskCountByUserIdAndChecklistId(Long userId,Long checklistId);
-
 
     @Query(value = "select * from `task` where checklist_id=?1 order by expire_date asc ",nativeQuery = true)
     List<Task> findByChecklistId(Long checklistId);
