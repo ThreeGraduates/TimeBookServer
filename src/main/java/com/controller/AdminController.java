@@ -88,4 +88,21 @@ public class AdminController {
         model.addAttribute("user",user);
         return "admin/userChart";
     }
+
+    /**
+     * 清单管理
+     */
+    @RequestMapping("/checklist")
+    public String toChecklist(){
+        return "admin/checklist";
+    }
+
+    /**
+     * 退出登录
+     */
+    @RequestMapping("/logout")
+    public String logout(HttpSession session){
+        session.invalidate();
+        return "admin/login";
+    }
 }

@@ -60,10 +60,10 @@ public class TaskController {
         if(allTasks!=0){
             JSONObject object=new JSONObject();
             NumberFormat ddf1= NumberFormat.getNumberInstance() ;
-            ddf1.setMaximumFractionDigits(2);
-            object.put("已完成",ddf1.format((float)task0/(float)allTasks));
-            object.put("未完成",ddf1.format((float)task1/(float)allTasks));
-            object.put("中途放弃",ddf1.format((float)task2/(float)allTasks));
+            ddf1.setMaximumFractionDigits(3);
+            object.put("finish",ddf1.format((float)task0/(float)allTasks));
+            object.put("unFinish",ddf1.format((float)task1/(float)allTasks));
+            object.put("abandon",ddf1.format((float)task2/(float)allTasks));
             response.getWriter().append(object.toString());
         }else{
             response.getWriter().append("empty");

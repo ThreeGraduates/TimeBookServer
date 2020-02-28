@@ -17,10 +17,21 @@
     <style>
         .top{
             width: 100%;
-            height: 50px;
+            height: 60px;
             background-color: #B22222;
             position: fixed;
             top:0;
+        }
+        .title{
+            color:white;
+            height: 60px;
+            font-size: 20px;
+            line-height: 60px;
+            margin-left: 1px;
+            text-align: center;
+        }
+        .active{
+            background-color: rgba(205,92,92);
         }
 
         /**表格样式修改**/
@@ -57,8 +68,16 @@
     </style>
 </head>
 <body>
-<%--<div class="top"></div>--%>
-<div class="container" style="margin-top: 10px">
+<div class="top">
+    <div class="row" style="width: 100%;">
+        <div class="title" style="margin-left: 44px;">小番茄后台管理页面</div>
+<%--        <div class="title col-md-1" onclick="toCheckList()">清单管理</div>--%>
+<%--        <div class="title col-md-1">任务管理</div>--%>
+    </div>
+    <span style="color: white;font-size: 25px;line-height: 60px;float: right;margin-right: 50px;margin-top:-55px;">Admin</span>
+    <img src="${ctx}/static/images/headImg.png" style="height: 50px;float: right;margin-top: 5px;margin-top:-55px;" onclick="logout()"/>
+</div>
+<div class="container" style="margin-top: 80px">
     <%--搜索框--%>
     <div class="row">
         <form action="return false;">
@@ -131,7 +150,19 @@
             },{
                 field:'createTime',
                 title: '注册时间',
-                align: 'center'
+                align: 'center',
+                formatter:function (value) {
+                    var date = new Date(value);
+                    var year = date.getFullYear();
+                    var month = date.getMonth()+1+"";
+                    if(month.length==1){month="0"+month;}
+                    var day = date.getDate()+"";
+                    if(day.length==1){day="0"+day;}
+                    var hour = date.getHours();
+                    var minutes = date.getMinutes();
+                    var second = date.getSeconds();
+                    return  year+"-"+month+"-"+day+" "+hour+":"+minutes +":"+second;
+                }
             },{
                 field:'signature',
                 title: '个性签名',
@@ -145,6 +176,14 @@
         }
         $('#table').bootstrapTable(tableData);
     });
+
+    function toCheckList() {
+        location.href="${ctx}/admin/checklist"
+    }
+
+    function logout() {
+        location.href="${ctx}/admin/logout"
+    }
 
     function actionFormatter(value, row, index) {
         var result = "";
