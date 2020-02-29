@@ -93,9 +93,9 @@ public class TaskListController {
             obj.put("priority",task.getPriority());
             if(task.getCreateDate()!=null){ obj.put("createDate",sdf.format(task.getCreateDate())); }
             if(task.getExpireDate()!=null){obj.put("expireDate",sdf.format(task.getExpireDate()));}
-//            SimpleDateFormat sdf2= new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-            if(task.getStartDatetime()!=null){ obj.put("startDatetime",task.getStartDatetime().getTime());}
-            if(task.getCompleteDatetime()!=null){obj.put("completeDatetime",task.getCompleteDatetime().getTime());}
+            SimpleDateFormat sdf2= new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+            if(task.getStartDatetime()!=null){ obj.put("startDatetime",sdf2.format(task.getStartDatetime()));}
+            if(task.getCompleteDatetime()!=null){obj.put("completeDatetime",sdf2.format(task.getCompleteDatetime()));}
             obj.put("useTime",task.getUseTime());
             obj.put("repeat",task.getRepeat());
             obj.put("remark",task.getRemark());
