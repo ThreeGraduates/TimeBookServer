@@ -16,9 +16,14 @@ import org.springframework.web.bind.annotation.ResponseBody;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.transaction.Transactional;
 import java.io.IOException;
+import java.sql.Timestamp;
 import java.text.NumberFormat;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 @Controller
@@ -68,5 +73,28 @@ public class TaskController {
         }else{
             response.getWriter().append("empty");
         }
+    }
+
+    /**
+     *  将已完成任务变为未完成，未完成任务变为已完成
+     */
+    @RequestMapping("/transFormTaskStatus")
+    @ResponseBody
+    public void transFormTaskStatus(HttpServletRequest request,HttpServletResponse response) throws ParseException, IOException {
+        response.setHeader("Content-type", "text/html;charset=UTF-8");
+        response.setCharacterEncoding("UTF-8");
+        Long taskId=Long.parseLong(request.getParameter("taskId"));
+        Integer originFlag=Integer.parseInt(request.getParameter("flag"));
+        Task task=this.taskDao.findOne(taskId);
+        if(originFlag==0){  //未完成 -->已完成
+            task.setFlag(1);
+            java.util.Date date = new java.util.Date();
+            Timestamp timeStamp = new Timestamp(date.getTime());
+            task.setCompleteDatetime(timeStamp);
+        }else if(originFlag==1){  //已完成 -->未完成
+            task.setFlag(0);
+            task.setCompleteDatetime(null);
+        }
+        this.taskDao.save(task);
     }
 }

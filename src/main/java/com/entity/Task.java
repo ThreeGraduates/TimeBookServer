@@ -26,6 +26,7 @@ public class Task {
     private Timestamp completeDatetime;  //任务完成时间
     private Integer useTime;  //任务已用时间，单位：分钟
 
+    @Column(name="`repeat`")  //保留字
     private String repeat;    //重复次数
     private String remark;    //备注
 
