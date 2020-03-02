@@ -79,7 +79,7 @@ public interface TaskDao extends JpaRepository<Task,Long> {
     @Query(value = "select * from `task` where user_id=?1 and (create_date=?2 or expire_date=?2) order by expire_date asc ",nativeQuery = true)
     List<Task> findByUserIdAndCreateDateOrExpireDate(Long userId,String date);
 
-    @Query(value = "select * from `task` where user_id=?1 and (create_date>?2 or expire_date>?2) order by expire_date asc ",nativeQuery = true)
+    @Query(value = "select * from `task` where user_id=?1 and create_date>?2 order by expire_date asc ",nativeQuery = true)
     List<Task> findTasksComeSoon(Long userId,String date);
 
     @Modifying
