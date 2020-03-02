@@ -123,9 +123,9 @@ public class TaskController {
         String createDateStr=jsonObject.getString("createDate");
         String expireDateStr=jsonObject.getString("expireDate");
         Date createDate=null;
-        if(!StringUtils.isBlank(createDateStr)){ createDate=sdf2.parse(createDateStr); }
+        if(!StringUtils.isBlank(createDateStr)&&!"null".equals(createDateStr)){ createDate=sdf2.parse(createDateStr); }
         Date expireDate=null;
-        if(!StringUtils.isBlank(expireDateStr)){ expireDate=sdf2.parse(expireDateStr); }
+        if(!StringUtils.isBlank(expireDateStr)&&!"null".equals(expireDateStr)){ expireDate=sdf2.parse(expireDateStr); }
         int flag=jsonObject.getInt("flag");
         int priority=jsonObject.getInt("priority");
         String remark=jsonObject.getString("remark");
@@ -133,12 +133,15 @@ public class TaskController {
         String startDatetimeStr=jsonObject.getString("startDatetime");
         String completeDatetimeStr=jsonObject.getString("completeDatetime");
         Timestamp startDatetime=null;
-        if(!StringUtils.isBlank(startDatetimeStr)){ startDatetime= new Timestamp(sdf1.parse(startDatetimeStr).getTime()); }
+        if(!StringUtils.isBlank(startDatetimeStr)&&!"null".equals(startDatetimeStr)){
+            startDatetime= new Timestamp(sdf1.parse(startDatetimeStr).getTime());
+        }
         Timestamp completeDatetime=null;
-        if(!StringUtils.isBlank(completeDatetimeStr)){completeDatetime=new Timestamp(sdf1.parse(completeDatetimeStr).getTime());}
+        if(!StringUtils.isBlank(completeDatetimeStr)&&!"null".equals(completeDatetimeStr)){completeDatetime=new Timestamp(sdf1.parse(completeDatetimeStr).getTime());}
         String title=jsonObject.getString("title");
         int useTime=jsonObject.getInt("useTime");
         long userId=jsonObject.getLong("userId");
+
         Task task=new Task(title,count,flag,priority,createDate,expireDate,startDatetime,completeDatetime,useTime,repeat,remark,userId,checklistId);
         this.taskDao.save(task);
     }
