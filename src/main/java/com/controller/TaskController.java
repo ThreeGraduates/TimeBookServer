@@ -1,6 +1,7 @@
 package com.controller;
 
 import com.dao.TaskDao;
+import com.entity.AppTime;
 import com.entity.Task;
 import com.entity.TaskStatus;
 import com.util.JSONUtils;
@@ -17,7 +18,10 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.transaction.Transactional;
+import java.io.BufferedReader;
 import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.sql.Timestamp;
 import java.text.NumberFormat;
 import java.text.ParseException;
@@ -95,6 +99,30 @@ public class TaskController {
             task.setFlag(0);
             task.setCompleteDatetime(null);
         }
-        this.taskDao.save(task);
+        Task task1=this.taskDao.save(task);
+        if(task1!=null){
+            response.getWriter().append("success");
+        }else{
+            response.getWriter().append("error");
+        }
     }
+
+    /**
+     * 保存任务
+     */
+    @RequestMapping("/saveTask")
+    @ResponseBody
+    public void saveTask(HttpServletRequest request,HttpServletResponse response) throws IOException {
+        JSONObject jsonObject=JSONUtils.getJsonObjFromRequest(request);
+        Task task= (Task) JSONObject.toBean(jsonObject);
+        if(task!=null){
+            Task task1=this.taskDao.save(task);
+            if(task1!=null){
+                response.getWriter().append(task1.getId()+"");
+            }
+        }else{
+            response.getWriter().append("error");
+        }
+    }
+
 }
