@@ -7,6 +7,7 @@ import com.entity.TaskStatus;
 import com.util.JSONUtils;
 import net.sf.json.JSONArray;
 import net.sf.json.JSONObject;
+import org.apache.commons.lang.StringUtils;
 import org.apache.tomcat.jni.Time;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -122,9 +123,9 @@ public class TaskController {
         String createDateStr=jsonObject.getString("createDate");
         String expireDateStr=jsonObject.getString("expireDate");
         Date createDate=null;
-        if(createDateStr!=null){ createDate=sdf2.parse(createDateStr); }
+        if(!StringUtils.isBlank(createDateStr)){ createDate=sdf2.parse(createDateStr); }
         Date expireDate=null;
-        if(expireDateStr!=null){ expireDate=sdf2.parse(expireDateStr); }
+        if(!StringUtils.isBlank(expireDateStr)){ expireDate=sdf2.parse(expireDateStr); }
         int flag=jsonObject.getInt("flag");
         int priority=jsonObject.getInt("priority");
         String remark=jsonObject.getString("remark");
@@ -132,9 +133,9 @@ public class TaskController {
         String startDatetimeStr=jsonObject.getString("startDatetime");
         String completeDatetimeStr=jsonObject.getString("completeDatetime");
         Timestamp startDatetime=null;
-        if(startDatetimeStr!=null){ startDatetime= new Timestamp(sdf1.parse(startDatetimeStr).getTime()); }
+        if(!StringUtils.isBlank(startDatetimeStr)){ startDatetime= new Timestamp(sdf1.parse(startDatetimeStr).getTime()); }
         Timestamp completeDatetime=null;
-        if(completeDatetimeStr!=null){completeDatetime=new Timestamp(sdf1.parse(completeDatetimeStr).getTime());}
+        if(!StringUtils.isBlank(completeDatetimeStr)){completeDatetime=new Timestamp(sdf1.parse(completeDatetimeStr).getTime());}
         String title=jsonObject.getString("title");
         int useTime=jsonObject.getInt("useTime");
         long userId=jsonObject.getLong("userId");
