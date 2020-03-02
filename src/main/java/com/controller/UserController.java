@@ -237,6 +237,7 @@ public class UserController {
         List<TaskList> taskLists=this.taskListDao.findByUserId(userId);
         for(TaskList list:taskLists){
             JSONObject obj=new JSONObject();
+            obj.put("id",list.getId());
             obj.put("title", list.getTitle());
             Integer time=this.taskDao.getSumTimeByUserIdAndChecklistId(userId,list.getId());
             Integer checkUseTime=this.taskDao.getUseTimeByUserIdAndChecklistId(userId,list.getId());

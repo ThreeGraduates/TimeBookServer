@@ -38,7 +38,7 @@ public class TaskController {
     private TaskDao taskDao;
 
     /**
-     * 清单下添加任务接口
+     * 清单下添加任务接口(废弃)
      */
     @RequestMapping("/addTask")
     public void addTask(HttpServletRequest request, HttpServletResponse response) throws IOException {
