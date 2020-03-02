@@ -42,7 +42,7 @@ public class AppTimeController {
         List<AppTime> list=(List)JSONArray.toCollection(jsonArray,AppTime.class);
         if(list.size()!=0){
             for(AppTime appTime:list){
-                AppTime appTime1=this.appTimeDao.findByUserIdAndCreateWeek(appTime.getUserId(),appTime.getCreateWeek());
+                AppTime appTime1=this.appTimeDao.findByUserIdAndCreateWeekAndAppName(appTime.getUserId(),appTime.getCreateWeek(),appTime.getAppName());
                 if(appTime1!=null){
                     this.appTimeDao.delete(appTime1);
                 }

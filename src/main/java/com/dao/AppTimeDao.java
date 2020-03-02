@@ -11,5 +11,5 @@ public interface AppTimeDao extends JpaRepository<AppTime,String> {
 
     List<AppTime> findByUserIdAndAppNameOrderByCreateDateAsc(Long userId,String appName);
 
-    AppTime findByUserIdAndCreateWeek(Long userId,Integer week);
+    AppTime findByUserIdAndCreateWeekAndAppName(Long userId,Integer week,String appName);
 }
