@@ -7,6 +7,7 @@ import com.entity.TaskStatus;
 import com.util.JSONUtils;
 import net.sf.json.JSONArray;
 import net.sf.json.JSONObject;
+import org.apache.tomcat.jni.Time;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -112,16 +113,32 @@ public class TaskController {
      */
     @RequestMapping("/saveTask")
     @ResponseBody
-    public void saveTask(HttpServletRequest request,HttpServletResponse response) throws IOException {
+    public void saveTask(HttpServletRequest request,HttpServletResponse response) throws IOException, ParseException {
         JSONObject jsonObject=JSONUtils.getJsonObjFromRequest(request);
-        Task task= (Task) JSONObject.toBean(jsonObject);
-        if(task!=null){
-            Task task1=this.taskDao.save(task);
-            if(task1!=null){
-                response.getWriter().append(task1.getId()+"");
-            }
-        }else{
-            response.getWriter().append("error");
-        }
+        long checklistId=jsonObject.getLong("checkListId");
+        int count=jsonObject.getInt("count");
+        SimpleDateFormat sdf1 = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+        SimpleDateFormat sdf2 = new SimpleDateFormat("yyyy-MM-dd");
+        String createDateStr=jsonObject.getString("createDate");
+        String expireDateStr=jsonObject.getString("expireDate");
+        Date createDate=null;
+        if(createDateStr!=null){ createDate=sdf2.parse(createDateStr); }
+        Date expireDate=null;
+        if(expireDateStr!=null){ expireDate=sdf2.parse(expireDateStr); }
+        int flag=jsonObject.getInt("flag");
+        int priority=jsonObject.getInt("priority");
+        String remark=jsonObject.getString("remark");
+        String repeat=jsonObject.getString("repeat");
+        String startDatetimeStr=jsonObject.getString("startDatetime");
+        String completeDatetimeStr=jsonObject.getString("completeDatetime");
+        Timestamp startDatetime=null;
+        if(startDatetimeStr!=null){ startDatetime= new Timestamp(sdf1.parse(startDatetimeStr).getTime()); }
+        Timestamp completeDatetime=null;
+        if(completeDatetimeStr!=null){completeDatetime=new Timestamp(sdf1.parse(completeDatetimeStr).getTime());}
+        String title=jsonObject.getString("title");
+        int useTime=jsonObject.getInt("useTime");
+        long userId=jsonObject.getLong("userId");
+        Task task=new Task(title,count,flag,priority,createDate,expireDate,startDatetime,completeDatetime,useTime,repeat,remark,userId,checklistId);
+        this.taskDao.save(task);
     }
 }

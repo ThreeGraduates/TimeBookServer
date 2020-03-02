@@ -29,4 +29,20 @@ public class Task {
     private String remark;    //备注
     private Long userId;
     private Long checklistId;
+
+    public Task(String title, Integer count, Integer flag, Integer priority, Date createDate, Date expireDate, Timestamp startDatetime, Timestamp completeDatetime, Integer useTime, String repeat, String remark, Long userId, Long checklistId) {
+        this.title = title;
+        this.count = count;
+        this.flag = flag;
+        this.priority = priority;
+        this.createDate = createDate;
+        this.expireDate = expireDate;
+        this.startDatetime = startDatetime;
+        this.completeDatetime = completeDatetime;
+        this.useTime = useTime;
+        this.repeat = repeat;
+        this.remark = remark;
+        this.userId = userId;
+        this.checklistId = checklistId;
+    }
 }
