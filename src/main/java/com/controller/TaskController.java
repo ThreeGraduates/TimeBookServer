@@ -145,4 +145,16 @@ public class TaskController {
         Task task=new Task(title,count,flag,priority,createDate,expireDate,startDatetime,completeDatetime,useTime,repeat,remark,userId,checklistId);
         this.taskDao.save(task);
     }
+
+    /**
+     * 删除任务
+     */
+    @RequestMapping("/deleteTask")
+    @ResponseBody
+    public void deleteTask(HttpServletRequest request,HttpServletResponse response) throws IOException {
+        Long taskId=Long.parseLong(request.getParameter("taskId"));
+        this.taskDao.delete(taskId);
+        response.getWriter().append("success");
+    }
+
 }
