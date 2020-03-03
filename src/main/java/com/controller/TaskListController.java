@@ -116,17 +116,17 @@ public class TaskListController {
         TaskList taskList=this.taskListDao.findOne(listId);
         User user=this.userDao.findById(taskList.getUserId());
 
-        Integer sumTime=this.taskDao.getAllTomatoCountByChecklistIdAndFlag(listId,0)*user.getTomatoTime();
-        Integer usedTime=this.taskDao.getUsedTimeByChecklistIdAndFlag(listId,0);
+//        Integer sumTime=this.taskDao.getAllTomatoCountByChecklistIdAndFlag(listId,0)*user.getTomatoTime();
+//        Integer usedTime=this.taskDao.getUsedTimeByChecklistIdAndFlag(listId,0);
 
         JSONArray array=new JSONArray();
         // index=0
-        JSONObject obj1=new JSONObject();
-        obj1.put("estimatedTime", sumTime-usedTime);
-        obj1.put("usedTime", this.taskDao.getUsedTimeByChecklistId(listId));
-        obj1.put("unfinishedTask", this.taskDao.getCountByChecklistIdAndFlag(listId,0));
-        obj1.put("finishedTask", this.taskDao.getCountByChecklistIdAndFlag(listId,1));
-        array.add(obj1);
+//        JSONObject obj1=new JSONObject();
+//        obj1.put("estimatedTime", sumTime-usedTime);
+//        obj1.put("usedTime", this.taskDao.getUsedTimeByChecklistId(listId));
+//        obj1.put("unfinishedTask", this.taskDao.getCountByChecklistIdAndFlag(listId,0));
+//        obj1.put("finishedTask", this.taskDao.getCountByChecklistIdAndFlag(listId,1));
+//        array.add(obj1);
         // 任务详情列表
         List<Task> tasks=this.taskDao.findByChecklistId(listId);
         for(Task task:tasks){
