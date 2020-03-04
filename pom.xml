@@ -92,7 +92,12 @@
       <artifactId>commons-fileupload</artifactId>
       <version>1.4</version>
     </dependency>
-
+    <!--json与java bean对象转换-->
+    <dependency>
+      <groupId>com.alibaba</groupId>
+      <artifactId>fastjson</artifactId>
+      <version>1.2.47</version>
+    </dependency>
   </dependencies>
 
   <!--引入spring cloud的依赖-->

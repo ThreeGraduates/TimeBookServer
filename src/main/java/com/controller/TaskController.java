@@ -156,5 +156,4 @@ public class TaskController {
         this.taskDao.delete(taskId);
         response.getWriter().append("success");
     }
-
 }
