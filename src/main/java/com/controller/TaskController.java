@@ -118,13 +118,28 @@ public class TaskController {
         response.setHeader("Content-type", "text/html;charset=UTF-8");
         response.setCharacterEncoding("UTF-8");
         Long taskId=Long.parseLong(request.getParameter("taskId"));
+        Integer useTime=Integer.parseInt(request.getParameter("useTime"));
         Task task=this.taskDao.findOne(taskId);
         task.setFlag(2);
+        task.setUseTime(useTime);
         this.taskDao.save(task);
     }
-
-
-
+    /**
+     * 完成任务接口
+     */
+    @RequestMapping("/completeTask")
+    @ResponseBody
+    public void completeTask(HttpServletRequest request,HttpServletResponse response) throws ParseException, IOException {
+        response.setHeader("Content-type", "text/html;charset=UTF-8");
+        response.setCharacterEncoding("UTF-8");
+        Long taskId=Long.parseLong(request.getParameter("taskId"));
+        Integer useTime=Integer.parseInt(request.getParameter("useTime"));
+        Task task=this.taskDao.findOne(taskId);
+        task.setFlag(1);
+        task.setUseTime(useTime);
+        task.setCompleteDatetime(new Timestamp(System.currentTimeMillis()));
+        this.taskDao.save(task);
+    }
     /**
      * 保存任务
      */

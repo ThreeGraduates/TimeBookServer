@@ -58,20 +58,20 @@ public interface TaskDao extends JpaRepository<Task,Long> {
     @Query(value = "select * from `task` where checklist_id=?1 and flag!=2 order by expire_date asc ",nativeQuery = true)
     List<Task> findByChecklistId(Long checklistId);
 
-    /**
-     * 根据清单,已用时间
-     */
-    @Query(value = "select sum(use_time) from `task` where checklist_id=?1",nativeQuery = true)
-    Integer getUsedTimeByChecklistId(Long checklistId);
-
-    @Query(value = "select sum(use_time) from `task` where checklist_id=?1 and flag=?2",nativeQuery = true)
-    Integer getUsedTimeByChecklistIdAndFlag(Long checklistId,Integer flag);
-
-    @Query(value = "select sum(count) from `task` where checklist_id=?1 and flag=?2",nativeQuery = true)
-    Integer getAllTomatoCountByChecklistIdAndFlag(Long checklistId,Integer flag);
-
-    @Query(value = "select count(*) from `task` where checklist_id=?1 and flag=?2",nativeQuery = true)
-    Integer getCountByChecklistIdAndFlag(Long checklistId,Integer flag);
+//    /**
+//     * 根据清单,已用时间
+//     */
+//    @Query(value = "select sum(use_time) from `task` where checklist_id=?1",nativeQuery = true)
+//    Integer getUsedTimeByChecklistId(Long checklistId);
+//
+//    @Query(value = "select sum(use_time) from `task` where checklist_id=?1 and flag=?2",nativeQuery = true)
+//    Integer getUsedTimeByChecklistIdAndFlag(Long checklistId,Integer flag);
+//
+//    @Query(value = "select sum(count) from `task` where checklist_id=?1 and flag=?2",nativeQuery = true)
+//    Integer getAllTomatoCountByChecklistIdAndFlag(Long checklistId,Integer flag);
+//
+//    @Query(value = "select count(*) from `task` where checklist_id=?1 and flag=?2",nativeQuery = true)
+//    Integer getCountByChecklistIdAndFlag(Long checklistId,Integer flag);
 
     /**
      * 获取今天、明天、即将到来任务列表
