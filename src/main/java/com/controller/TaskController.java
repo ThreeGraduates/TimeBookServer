@@ -110,6 +110,22 @@ public class TaskController {
     }
 
     /**
+     * 中途放弃任务接口
+     */
+    @RequestMapping("/giveUpTask")
+    @ResponseBody
+    public void giveUpTask(HttpServletRequest request,HttpServletResponse response) throws ParseException, IOException {
+        response.setHeader("Content-type", "text/html;charset=UTF-8");
+        response.setCharacterEncoding("UTF-8");
+        Long taskId=Long.parseLong(request.getParameter("taskId"));
+        Task task=this.taskDao.findOne(taskId);
+        task.setFlag(2);
+        this.taskDao.save(task);
+    }
+
+
+
+    /**
      * 保存任务
      */
     @RequestMapping("/saveTask")

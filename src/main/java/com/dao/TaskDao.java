@@ -18,44 +18,44 @@ public interface TaskDao extends JpaRepository<Task,Long> {
     /**
      * 得到今天、明天任务总用时
      */
-    @Query(value = "select sum(count) from `task` where user_id=?1 and (create_date=?2 or expire_date=?2)",nativeQuery = true)
+    @Query(value = "select sum(count) from `task` where user_id=?1 and (create_date=?2 or expire_date=?2) and flag!=2",nativeQuery = true)
     Integer getSumTimeByUserIdAndExpireDateAndCreateDate(Long userId, String expireDate);
 
     /**
      * 得到今天、明天任务总的已用时间
      */
-    @Query(value = "select sum(use_time) from `task` where user_id=?1 and (create_date=?2 or expire_date=?2)",nativeQuery = true)
+    @Query(value = "select sum(use_time) from `task` where user_id=?1 and (create_date=?2 or expire_date=?2) and flag!=2",nativeQuery = true)
     Integer getUseTimeByUserIdAndExpireDateAndCreateDate(Long userId, String expireDate);
 
     /**
      * 得到即将到来任务总用时
      */
-    @Query(value = "select sum(count) from `task` where user_id=?1 and (create_date>?2 or expire_date>?2)",nativeQuery = true)
+    @Query(value = "select sum(count) from `task` where user_id=?1 and (create_date>?2 or expire_date>?2) and flag!=2",nativeQuery = true)
     Integer getSoonSumTimeByUserIdAndExpireDateAndCreateDate(Long userId, String expireDate);
 
     /**
      * 得到即将到来任务总的已用时间
      */
-    @Query(value = "select sum(use_time) from `task` where user_id=?1 and (create_date>?2 or expire_date>?2)",nativeQuery = true)
+    @Query(value = "select sum(use_time) from `task` where user_id=?1 and (create_date>?2 or expire_date>?2) and flag!=2",nativeQuery = true)
     Integer getSoonUseTimeByUserIdAndExpireDateAndCreateDate(Long userId, String expireDate);
 
     /**
      * 得到清单任务总用时
      */
-    @Query(value = "select sum(count) from `task` where user_id=?1 and checklist_id=?2",nativeQuery = true)
+    @Query(value = "select sum(count) from `task` where user_id=?1 and checklist_id=?2 and flag!=2",nativeQuery = true)
     Integer getSumTimeByUserIdAndChecklistId(Long userId,Long checklistId);
     /**
      * 得到清单任务总的已用时间
      */
-    @Query(value = "select sum(use_time) from `task` where user_id=?1 and checklist_id=?2",nativeQuery = true)
+    @Query(value = "select sum(use_time) from `task` where user_id=?1 and checklist_id=?2 and flag!=2",nativeQuery = true)
     Integer getUseTimeByUserIdAndChecklistId(Long userId,Long checklistId);
     /**
      * 得到清单任务总数
      */
-    @Query(value = "select count(*) from `task` where user_id=?1 and checklist_id=?2",nativeQuery = true)
+    @Query(value = "select count(*) from `task` where user_id=?1 and checklist_id=?2 and flag!=2",nativeQuery = true)
     Integer getTaskCountByUserIdAndChecklistId(Long userId,Long checklistId);
 
-    @Query(value = "select * from `task` where checklist_id=?1 order by expire_date asc ",nativeQuery = true)
+    @Query(value = "select * from `task` where checklist_id=?1 and flag!=2 order by expire_date asc ",nativeQuery = true)
     List<Task> findByChecklistId(Long checklistId);
 
     /**
@@ -76,10 +76,10 @@ public interface TaskDao extends JpaRepository<Task,Long> {
     /**
      * 获取今天、明天、即将到来任务列表
      */
-    @Query(value = "select * from `task` where user_id=?1 and (create_date=?2 or expire_date=?2) order by expire_date asc ",nativeQuery = true)
+    @Query(value = "select * from `task` where user_id=?1 and (create_date=?2 or expire_date=?2) and flag!=2 order by expire_date asc ",nativeQuery = true)
     List<Task> findByUserIdAndCreateDateOrExpireDate(Long userId,String date);
 
-    @Query(value = "select * from `task` where user_id=?1 and create_date>?2 order by expire_date asc ",nativeQuery = true)
+    @Query(value = "select * from `task` where user_id=?1 and create_date>?2 and flag!=2 order by expire_date asc ",nativeQuery = true)
     List<Task> findTasksComeSoon(Long userId,String date);
 
     @Modifying
@@ -89,7 +89,7 @@ public interface TaskDao extends JpaRepository<Task,Long> {
     /**
      * 图表统计--一个月内用户番茄任务完成情况
      */
-    @Query(value = "select count(*) from `task` where user_id=?1 and create_date>?2 and create_date<?3",nativeQuery = true)
+    @Query(value = "select count(*) from `task` where user_id=?1 and create_date>?2 and create_date<?3 and flag!=2",nativeQuery = true)
     Integer findByUserIdAndCreateDate(Long userId,String startDate,String endDate);
 
     @Query(value = "select count(*) from `task` where user_id=?1 and create_date>?2 and create_date<?3 and flag=?4",nativeQuery = true)
