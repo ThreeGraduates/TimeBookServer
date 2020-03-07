@@ -30,7 +30,7 @@ public class PhoneTimeController {
     private PhoneTimeDao phoneTimeDao;
 
     /**
-     *  保存用户今日app使用时间
+     *  保存用户今日手机使用时间
      */
     @RequestMapping("/saveOne")
     @ResponseBody

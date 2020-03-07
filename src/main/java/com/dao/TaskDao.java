@@ -89,7 +89,7 @@ public interface TaskDao extends JpaRepository<Task,Long> {
     /**
      * 图表统计--一个月内用户番茄任务完成情况
      */
-    @Query(value = "select count(*) from `task` where user_id=?1 and create_date>?2 and create_date<?3 and flag!=2",nativeQuery = true)
+    @Query(value = "select count(*) from `task` where user_id=?1 and create_date>?2 and create_date<?3",nativeQuery = true)
     Integer findByUserIdAndCreateDate(Long userId,String startDate,String endDate);
 
     @Query(value = "select count(*) from `task` where user_id=?1 and create_date>?2 and create_date<?3 and flag=?4",nativeQuery = true)
